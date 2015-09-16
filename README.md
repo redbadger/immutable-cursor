@@ -2,7 +2,7 @@
 [![Circle CI](https://circleci.com/gh/redbadger/immutable-cursor.svg?style=svg)](https://circleci.com/gh/redbadger/immutable-cursor)
 [![npm version](https://badge.fury.io/js/immutable-cursor.svg)](http://badge.fury.io/js/immutable-cursor)
 
-A fork of immutable.js' cursor with semantics better suited for use with component-centric view layers.
+An isolated fork of immutable.js' cursor with semantics better suited for use with component-centric view layers.
 
 ## Rationale
 
@@ -30,7 +30,7 @@ cursor.set('b', 3);
 
 This has far reaching consequences when used in component-centric view layers such as React. A typical use case
 would be to make several derivations of a cursor within a React component before propagating them down the
-sub-tree as `props`. Regardless of how many times you split a cursor in this way, they will **always** reference
+sub-tree as `props`. Regardless of how many times you split a cursor in this way, they will now **always** reference
 the same copy of the root-level atom. This ensures that any update you make will always be on the latest version
 of the atom.
 
@@ -42,6 +42,11 @@ of the atom.
 * Generation of browser-based bundle through Webpack
 * Added linting using ESLint
 * Removed Jest (and Jasmine) from testsuite and replaced with Mocha, Chai and Sinon.
+
+## Relationship with Immutable.js
+
+`immutable-cursor` requires Immutable.js to be included in the runtime. I'm unsure as to the minimum supported version, however, since the cursor is given the `prototype` methods belonging to [`KeyedSeq`](http://facebook.github.io/immutable-js/docs/#/KeyedSeq) and [`IndexedSeq`](http://facebook.github.io/immutable-js/docs/#/IndexedSeq), as long as these types are included in the Immutable.js version, then you should be fine.
+
 
 ## Contributing
 
