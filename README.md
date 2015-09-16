@@ -47,6 +47,7 @@ of the atom.
 
 `immutable-cursor` requires Immutable.js to be included in the runtime. I'm unsure as to the minimum supported version, however, since the cursor is given the `prototype` methods belonging to [`KeyedSeq`](http://facebook.github.io/immutable-js/docs/#/KeyedSeq) and [`IndexedSeq`](http://facebook.github.io/immutable-js/docs/#/IndexedSeq), as long as these types are included in the Immutable.js version, then you should be fine.
 
+I will be tracking Immutable.js cursor implementation for any updates and will merge them where appropriate
 
 ## Contributing
 
