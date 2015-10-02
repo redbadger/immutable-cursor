@@ -35,12 +35,12 @@ Base.prototype = {
   },
 
   getIn(keyPath, notSetValue) {
-    keyPath = listToKeyPath(keyPath);
-    if (keyPath.length === 0) {
+    const constructKeyPath = listToKeyPath(keyPath);
+    if (constructKeyPath.length === 0) {
       return this;
     }
-    const value = this._root._data.getIn(newKeyPath(this._keyPath, keyPath), NOT_SET);
-    return value === NOT_SET ? notSetValue : wrappedValue(this, keyPath, value);
+    const value = this._root._data.getIn(newKeyPath(this._keyPath, constructKeyPath), NOT_SET);
+    return value === NOT_SET ? notSetValue : wrappedValue(this, constructKeyPath, value);
   },
 
   set(key, value) {
@@ -110,8 +110,8 @@ Base.prototype = {
     return updateCursor(this, m => (m || Map()).withMutations(fn));
   },
 
-  cursor(subKeyPath) {
-    subKeyPath = valToKeyPath(subKeyPath);
+  cursor(path) {
+    const subKeyPath = valToKeyPath(path);
     return subKeyPath.length === 0 ? this : subCursor(this, subKeyPath);
   },
 
