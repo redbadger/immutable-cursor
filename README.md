@@ -54,4 +54,4 @@ I will be tracking Immutable.js cursor implementation for any updates and will m
 1. Fork the repo and create your branch from `master`
 2. `npm install`
 3. Add tests
-4. Build generated JS using `npm run build`
+4. Commit the aforementioned and associated source files. **NOTE** There is no need to manually create the generated `dist` files; this, a test run and a linting pass is done automatically every time you make a commit.

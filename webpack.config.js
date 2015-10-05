@@ -5,7 +5,7 @@ module.exports = {
   entry: ['./src/cursor.js'],
   output: {
     filename: 'cursor.min.js',
-    path: path.join(__dirname, 'dist', 'browser'),
+    path: path.join(__dirname, 'dist'),
     libraryTarget: 'var'
   },
   externals: {
