@@ -1,0 +1,16 @@
+#!/bin/sh
+
+
+npm test && npm run lint
+if [[ "$?" != 0 ]]; then
+  echo "You need to fix the above issue(s) before attempting this commit"
+  exit 1
+fi
+
+# Refresh the Webpack bundle and Babel-transpiled CommonJS files in /dist/*
+if [ "$(git diff --name-only --cached | grep '^src/')" ]
+  then
+    echo "Regenerating Webpack bundle and Babel-transpiled files..."
+    npm run build
+    git add dist/* lib/*
+fi

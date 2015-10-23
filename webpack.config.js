@@ -6,7 +6,7 @@ module.exports = {
   output: {
     filename: 'cursor.min.js',
     path: path.join(__dirname, 'dist'),
-    libraryTarget: 'var',
+    libraryTarget: 'var'
   },
   externals: {
     // We'll eventually include immutable-js here too, however, until
