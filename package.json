@@ -37,6 +37,7 @@
     "postinstall": "if [ -z \"$CI\" ]; then chmod +x hooks/*; cd .git/hooks && ln -sf ../../hooks/* .; fi",
     "lint": "node_modules/.bin/eslint .",
     "compile": "babel src --out-dir dist",
-    "test": "node_modules/.bin/mocha --compilers js:babel/register"
+    "test": "node_modules/.bin/mocha --compilers js:babel/register",
+    "prepublish": "npm run compile"
   }
 }
