@@ -2,7 +2,7 @@
   "name": "immutable-cursor",
   "version": "0.0.2",
   "description": "A fork of the Immutable.js cursor with more practical semantics",
-  "main": "lib/cursor.js",
+  "main": "dist/cursor.js",
   "author": {
     "name": "James Hopkins",
     "url": "https://github.com/jameshopkins"
@@ -37,7 +37,7 @@
   "scripts": {
     "postinstall": "if [ -z \"$CI\" ]; then chmod +x hooks/*; cd .git/hooks && ln -sf ../../hooks/* .; fi",
     "lint": "node_modules/.bin/eslint .",
-    "build": "webpack && babel src --out-dir lib",
+    "compile": "babel src --out-dir dist",
     "test": "node_modules/.bin/mocha --compilers js:babel/register"
   }
 }
