@@ -31,8 +31,7 @@
     "eslint-config-airbnb": "0.0.8",
     "immutable": "3.7.6",
     "mocha": "^2.3.2",
-    "sinon": "^1.15.4",
-    "webpack": "^1.12.1"
+    "sinon": "^1.15.4"
   },
   "scripts": {
     "postinstall": "if [ -z \"$CI\" ]; then chmod +x hooks/*; cd .git/hooks && ln -sf ../../hooks/* .; fi",
