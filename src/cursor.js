@@ -18,7 +18,7 @@ function cursorFrom(data, keyPath, onChange) {
   } else {
     keyPath = valToKeyPath(keyPath);
   }
-  return makeCursor(null, data, keyPath, onChange);
+  return makeCursor(data, keyPath, onChange);
 }
 
 exports.from = cursorFrom;

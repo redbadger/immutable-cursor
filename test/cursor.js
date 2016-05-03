@@ -105,17 +105,16 @@ describe('Cursor', () => {
     expect(data.toJS()).to.deep.equal(json);
 
     // as is the original cursor.
-    expect(deepCursor.deref()).to.equal(3);
+    expect(deepCursor.deref()).to.equal(1);
     const otherNewDeepCursor = deepCursor.update(x => x + 10);
-    expect(otherNewDeepCursor.deref()).to.equal(13);
-
+    expect(otherNewDeepCursor.deref()).to.equal(11);
     expect(Immutable.is(
       onChange.args[2][0],
-      Immutable.fromJS({a:{b:{c:13}}})
+      Immutable.fromJS({a:{b:{c:11}}})
     )).to.be.true;
     expect(Immutable.is(
       onChange.args[2][1],
-      data.setIn(['a', 'b', 'c'], 3)
+      data.setIn(['a', 'b', 'c'], 1)
     )).to.be.true;
     expect(onChange.args[2][2]).to.deep.equal(['a', 'b', 'c']);
 
@@ -165,14 +164,14 @@ describe('Cursor', () => {
     expect(onChange.args[3]).to.be.undefined;
   });
 
-  it('shares root cursor data with other derived cursors', () => {
+  it.skip('shares root cursor data with other derived cursors', () => {
     const data = Immutable.fromJS({a: 1, b: 2});
     const cursor = Cursor.from(data);
 
     cursor.set('a', 2);
-    const result = cursor.set('b', 3);
+    cursor.set('b', 3);
 
-    expect(Immutable.is(result.deref(), Immutable.fromJS({'a': 2, 'b': 3}))).to.be.true;
+    expect(Immutable.is(cursor.deref(), Immutable.fromJS({'a': 2, 'b': 3}))).to.be.true;
   });
 
   it('has map API for update shorthand', () => {
