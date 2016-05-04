@@ -23,13 +23,13 @@ export function defineRecordProperties(cursor, value) {
   }
 }
 
-export function makeCursor(rootData, keyPath, onChange, value) {
+export function makeCursor(rootData, keyPath, updater, value) {
   if (arguments.length < 4) {
     value = rootData.getIn(keyPath);
   }
   const size = value && value.size;
   const Cursor = Iterable.isIndexed(value) ? IndexedCursor : KeyedCursor;
-  const cursor = new Cursor(rootData, keyPath, onChange, size);
+  const cursor = new Cursor(rootData, keyPath, updater, size);
 
   if (value instanceof Record) {
     defineRecordProperties(cursor, value);
@@ -65,36 +65,43 @@ export function subCursor(cursor, keyPath, value) {
     return makeCursor( // call without value
       cursor._rootData,
       newKeyPath(cursor._keyPath, keyPath),
-      cursor._onChange
+      cursor._updater
     );
   }
   return makeCursor(
     cursor._rootData,
     newKeyPath(cursor._keyPath, keyPath),
-    cursor._onChange,
+    cursor._updater,
     value
   );
 }
 
 export function updateCursor(cursor, changeFn, changeKeyPath) {
   const deepChange = arguments.length > 2;
-  let newRootData = cursor._rootData.updateIn(
+  const updateFn = () => cursor._rootData.updateIn(
     cursor._keyPath,
     deepChange ? Map() : undefined,
     changeFn
   );
-  const keyPath = cursor._keyPath || [];
-  const result = cursor._onChange && cursor._onChange.call(
-    undefined,
-    newRootData,
-    cursor._rootData,
-    deepChange ? newKeyPath(keyPath, changeKeyPath) : keyPath
-  );
-  if (result !== undefined) {
-    newRootData = result;
-  }
+  cursor._updater(updateFn);
 
-  return makeCursor(newRootData, cursor._keyPath, cursor._onChange);
+  // let newRootData = cursor._rootData.updateIn(
+  //   cursor._keyPath,
+  //   deepChange ? Map() : undefined,
+  //   changeFn
+  // );
+  // const keyPath = cursor._keyPath || [];
+  // const result = cursor._onChange && cursor._onChange.call(
+  //   undefined,
+  //   newRootData,
+  //   cursor._rootData,
+  //   deepChange ? newKeyPath(keyPath, changeKeyPath) : keyPath
+  // );
+  // if (result !== undefined) {
+  //   newRootData = result;
+  // }
+
+  return makeCursor(updateFn(), cursor._keyPath, cursor._updater);
 }
 
 export function wrappedValue(cursor, keyPath, value) {

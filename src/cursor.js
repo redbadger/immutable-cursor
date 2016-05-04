@@ -8,8 +8,10 @@
  */
 
 import {valToKeyPath, makeCursor} from './utils';
+import { createAtom } from 'js-atom';
 
 function cursorFrom(data, keyPath, onChange) {
+  const atom = createAtom(data);
   if (arguments.length === 1) {
     keyPath = [];
   } else if (typeof keyPath === 'function') {
@@ -18,7 +20,9 @@ function cursorFrom(data, keyPath, onChange) {
   } else {
     keyPath = valToKeyPath(keyPath);
   }
-  return makeCursor(data, keyPath, onChange);
+  typeof onChange !== 'undefined' && atom.addWatch('onChange', onChange);
+
+  return makeCursor(atom.deref(data), keyPath, atom.swap);
 }
 
 exports.from = cursorFrom;

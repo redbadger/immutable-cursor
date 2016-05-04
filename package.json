@@ -21,7 +21,8 @@
   },
   "homepage": "https://github.com/redbadger/immutable-cursor",
   "dependencies": {
-    "immutable": "3.7.6"
+    "immutable": "3.7.6",
+    "js-atom": "^0.4.0"
   },
   "devDependencies": {
     "babel-cli": "^6.8.0",
