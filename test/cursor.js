@@ -51,6 +51,7 @@ describe('Cursor', () => {
     const cursor = Cursor.from(data, ['a', 'b']);
     expect(cursor.toJS()).to.deep.equal(json.a.b);
     expect(Immutable.is(cursor, data.getIn(['a', 'b']))).to.be.true;
+    //console.log(cursor.size);
     expect(cursor.size).to.equal(1);
     expect(cursor.get('c')).to.equal(1);
   });
@@ -103,10 +104,10 @@ describe('Cursor', () => {
     // as is the original cursor.
     expect(deepCursor.deref()).to.equal(1);
     const otherNewDeepCursor = deepCursor.update(x => x + 10);
-    expect(otherNewDeepCursor.deref()).to.equal(11);
+    expect(otherNewDeepCursor.deref()).to.equal(13);
     expect(Immutable.is(
       onChange.args[2][3],
-      Immutable.fromJS({a:{b:{c:11}}})
+      Immutable.fromJS({a:{b:{c:13}}})
     )).to.be.true;
     expect(Immutable.is(
       onChange.args[2][2],
@@ -117,14 +118,20 @@ describe('Cursor', () => {
     expect(onChange.callCount).to.equal(3);
   });
 
-  it.skip('shares root cursor data with other derived cursors', () => {
+  it('shares root cursor data with other derived cursors', () => {
+    const onChange = sinon.spy();
     const data = Immutable.fromJS({a: 1, b: 2});
-    const cursor = Cursor.from(data);
+    const cursor = Cursor.from(data, onChange);
 
     cursor.set('a', 2);
     cursor.set('b', 3);
 
-    expect(Immutable.is(cursor.deref(), Immutable.fromJS({'a': 2, 'b': 3}))).to.be.true;
+    // Ensure multiple cursor updates in one render cycle are serialised
+    expect(Immutable.is(onChange.args[1][3], Immutable.fromJS({a: 2, b: 3})));
+
+    // Whilst cursors stay immutable
+    expect(cursor.get('a')).to.equal(1);
+    expect(cursor.get('b')).to.equal(2);
   });
 
   it('has map API for update shorthand', () => {

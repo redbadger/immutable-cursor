@@ -23,13 +23,13 @@ export function defineRecordProperties(cursor, value) {
   }
 }
 
-export function makeCursor(rootData, keyPath, updater, value) {
-  if (arguments.length < 4) {
+export function makeCursor(rootData, keyPath, updater, deref, value) {
+  if (arguments.length < 5) {
     value = rootData.getIn(keyPath);
   }
   const size = value && value.size;
   const Cursor = Iterable.isIndexed(value) ? IndexedCursor : KeyedCursor;
-  const cursor = new Cursor(rootData, keyPath, updater, size);
+  const cursor = new Cursor(rootData, keyPath, updater, deref, size);
 
   if (value instanceof Record) {
     defineRecordProperties(cursor, value);
@@ -65,43 +65,28 @@ export function subCursor(cursor, keyPath, value) {
     return makeCursor( // call without value
       cursor._rootData,
       newKeyPath(cursor._keyPath, keyPath),
-      cursor._updater
+      cursor._updater,
+      cursor._deref
     );
   }
   return makeCursor(
     cursor._rootData,
     newKeyPath(cursor._keyPath, keyPath),
     cursor._updater,
+    cursor._deref,
     value
   );
 }
 
 export function updateCursor(cursor, changeFn, changeKeyPath) {
   const deepChange = arguments.length > 2;
-  const updateFn = () => cursor._rootData.updateIn(
+  const updateFn = () => cursor._deref().updateIn(
     cursor._keyPath,
     deepChange ? Map() : undefined,
     changeFn
   );
   cursor._updater(updateFn);
-
-  // let newRootData = cursor._rootData.updateIn(
-  //   cursor._keyPath,
-  //   deepChange ? Map() : undefined,
-  //   changeFn
-  // );
-  // const keyPath = cursor._keyPath || [];
-  // const result = cursor._onChange && cursor._onChange.call(
-  //   undefined,
-  //   newRootData,
-  //   cursor._rootData,
-  //   deepChange ? newKeyPath(keyPath, changeKeyPath) : keyPath
-  // );
-  // if (result !== undefined) {
-  //   newRootData = result;
-  // }
-
-  return makeCursor(updateFn(), cursor._keyPath, cursor._updater);
+  return makeCursor(cursor._deref(), cursor._keyPath, cursor._updater, cursor._deref);
 }
 
 export function wrappedValue(cursor, keyPath, value) {
