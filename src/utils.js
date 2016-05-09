@@ -78,7 +78,7 @@ export function subCursor(cursor, keyPath, value) {
   );
 }
 
-export function updateCursor(cursor, changeFn, changeKeyPath) {
+export function updateCursor(cursor, changeFn) {
   const deepChange = arguments.length > 2;
   const updateFn = oldState => oldState.updateIn(
     cursor._keyPath,

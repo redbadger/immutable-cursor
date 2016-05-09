@@ -25,7 +25,9 @@ function cursorFrom(data, keyPath, onChange) {
     keyPath = valToKeyPath(keyPath);
   }
 
-  typeof onChange !== 'undefined' && atom.addWatch('onChange', onChange);
+  if (typeof onChange !== 'undefined') {
+    atom.addWatch('onChange', onChange);
+  }
 
   return makeCursor(data, keyPath, swap.bind(atom, atom.deref()), atom.deref);
 }

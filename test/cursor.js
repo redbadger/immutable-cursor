@@ -51,7 +51,6 @@ describe('Cursor', () => {
     const cursor = Cursor.from(data, ['a', 'b']);
     expect(cursor.toJS()).to.deep.equal(json.a.b);
     expect(Immutable.is(cursor, data.getIn(['a', 'b']))).to.be.true;
-    //console.log(cursor.size);
     expect(cursor.size).to.equal(1);
     expect(cursor.get('c')).to.equal(1);
   });
@@ -195,7 +194,6 @@ describe('Cursor', () => {
       onChange.args[0][2],
       data
     )).to.be.true;
-
   });
 
   it('can pop values of a List', () => {
@@ -217,7 +215,6 @@ describe('Cursor', () => {
       onChange.args[0][2],
       data
     )).to.be.true;
-
   });
 
   it('can unshift values on a List', () => {
@@ -239,7 +236,6 @@ describe('Cursor', () => {
       onChange.args[0][2],
       data
     )).to.be.true;
-
   });
 
   it('can shift values of a List', () => {
@@ -261,7 +257,6 @@ describe('Cursor', () => {
       onChange.args[0][2],
       data
     )).to.be.true;
-
   });
 
 
