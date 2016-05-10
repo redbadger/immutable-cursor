@@ -212,7 +212,7 @@ describe('Cursor', () => {
     const data = Immutable.Map({a: 1, b: 2, c: 3});
     const cursor = Cursor.from(data);
     expect(Immutable.is(
-      cursor.map((x: number) => x * x),
+      cursor.map(x => x * x),
       Immutable.Map({a: 1, b: 4, c: 9})
     )).to.be.true;
   });
