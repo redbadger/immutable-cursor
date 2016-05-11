@@ -8,11 +8,7 @@
  */
 
 import {valToKeyPath, makeCursor} from './utils';
-import { createAtom } from 'js-atom';
-
-function swap(oldState, updateFn) {
-  return this.swap(updateFn);
-}
+import createAtom from 'atom-store';
 
 function cursorFrom(data, keyPath, onChange) {
   const atom = createAtom(data);
@@ -26,10 +22,10 @@ function cursorFrom(data, keyPath, onChange) {
   }
 
   if (typeof onChange !== 'undefined') {
-    atom.addWatch('onChange', onChange);
+    atom.watch(onChange);
   }
 
-  return makeCursor(data, keyPath, swap.bind(atom, atom.deref()), atom.deref);
+  return makeCursor(data, keyPath, atom.write.bind(atom), atom.read);
 }
 
 exports.from = cursorFrom;
