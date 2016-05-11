@@ -32,6 +32,7 @@
     "chai": "^3.2.0",
     "eslint": "^1.4.1",
     "eslint-config-airbnb": "0.0.8",
+    "istanbul": "^1.0.0-alpha.2",
     "mocha": "^2.3.2",
     "sinon": "^1.15.4"
   },
@@ -40,6 +41,7 @@
     "lint": "node_modules/.bin/eslint .",
     "compile": "babel src --out-dir dist",
     "test": "node_modules/.bin/mocha --compilers js:babel-core/register",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "coverage": "babel-node $(npm bin)/istanbul cover --report html _mocha -- --compilers js:babel-core/register test/cursor.js"
   }
 }
