@@ -23,13 +23,13 @@ export function defineRecordProperties(cursor, value) {
   }
 }
 
-export function makeCursor(root, data, keyPath, onChange, value) {
+export function makeCursor(rootData, keyPath, updater, deref, value) {
   if (arguments.length < 5) {
-    value = (root ? root._data : data).getIn(keyPath);
+    value = rootData.getIn(keyPath);
   }
   const size = value && value.size;
   const Cursor = Iterable.isIndexed(value) ? IndexedCursor : KeyedCursor;
-  const cursor = new Cursor(root, data, keyPath, onChange, size);
+  const cursor = new Cursor(rootData, keyPath, updater, deref, size);
 
   if (value instanceof Record) {
     defineRecordProperties(cursor, value);
@@ -63,43 +63,29 @@ export function valToKeyPath(val) {
 export function subCursor(cursor, keyPath, value) {
   if (arguments.length < 3) {
     return makeCursor( // call without value
-      cursor._root,
-      null,
+      cursor._rootData,
       newKeyPath(cursor._keyPath, keyPath),
-      cursor._onChange
+      cursor._updater,
+      cursor._deref
     );
   }
   return makeCursor(
-    cursor._root,
-    null,
+    cursor._rootData,
     newKeyPath(cursor._keyPath, keyPath),
-    cursor._onChange,
+    cursor._updater,
+    cursor._deref,
     value
   );
 }
 
-export function updateCursor(cursor, changeFn, changeKeyPath) {
+export function updateCursor(cursor, changeFn) {
   const deepChange = arguments.length > 2;
-  let newRootData = cursor._root._data.updateIn(
+  const updateFn = oldState => oldState.updateIn(
     cursor._keyPath,
     deepChange ? Map() : undefined,
     changeFn
   );
-  const keyPath = cursor._keyPath || [];
-  const result = cursor._onChange && cursor._onChange.call(
-    undefined,
-    newRootData,
-    cursor._root._data,
-    deepChange ? newKeyPath(keyPath, changeKeyPath) : keyPath
-  );
-  if (result !== undefined) {
-    newRootData = result;
-  }
-
-  // Mutate the root data, thus enabling all derived cursors to see the update.
-  cursor._root._data = newRootData;
-
-  return makeCursor(cursor._root, null, cursor._keyPath, cursor._onChange);
+  return makeCursor(cursor._updater(updateFn), cursor._keyPath, cursor._updater, cursor._deref);
 }
 
 export function wrappedValue(cursor, keyPath, value) {

@@ -1,6 +1,6 @@
 {
   "name": "immutable-cursor",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "A fork of the Immutable.js cursor with more practical semantics",
   "main": "dist/cursor.js",
   "author": {
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/redbadger/immutable-cursor",
   "dependencies": {
+    "atom-store": "0.0.2",
     "immutable": "3.7.6"
   },
   "devDependencies": {

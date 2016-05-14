@@ -76,103 +76,61 @@ describe('Cursor', () => {
     const newDeepCursor = deepCursor.update(x => x + 1);
     expect(newDeepCursor.deref()).to.equal(2);
 
-    // We're unable to use `spyCall.calledWith()` here due to limitations in
-    // Chai's deep recursive value-based equality.
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       Immutable.fromJS({a:{b:{c:2}}})
     )).to.be.true;
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       data
     )).to.be.true;
-    expect(onChange.args[0][2]).to.deep.equal(['a', 'b', 'c']);
 
     const newestDeepCursor = newDeepCursor.update(x => x + 1);
     expect(newestDeepCursor.deref()).to.equal(3);
 
     expect(Immutable.is(
-      onChange.args[1][0],
+      onChange.args[1][1],
       Immutable.fromJS({a:{b:{c:3}}})
     )).to.be.true;
     expect(Immutable.is(
-      onChange.args[1][1],
+      onChange.args[1][0],
       Immutable.fromJS({a:{b:{c:2}}})
     )).to.be.true;
-    expect(onChange.args[1][2]).to.deep.equal(['a', 'b', 'c']);
 
     // meanwhile, data is still immutable:
     expect(data.toJS()).to.deep.equal(json);
 
     // as is the original cursor.
-    expect(deepCursor.deref()).to.equal(3);
+    expect(deepCursor.deref()).to.equal(1);
     const otherNewDeepCursor = deepCursor.update(x => x + 10);
     expect(otherNewDeepCursor.deref()).to.equal(13);
-
     expect(Immutable.is(
-      onChange.args[2][0],
+      onChange.args[2][1],
       Immutable.fromJS({a:{b:{c:13}}})
     )).to.be.true;
     expect(Immutable.is(
-      onChange.args[2][1],
-      data.setIn(['a', 'b', 'c'], 3)
+      onChange.args[2][0],
+      data.setIn(['a', 'b', 'c'], 3) // NOT SURE IF CORRECT
     )).to.be.true;
-    expect(onChange.args[2][2]).to.deep.equal(['a', 'b', 'c']);
 
     // and update has been called exactly thrice.
     expect(onChange.callCount).to.equal(3);
   });
 
-  it('updates with the return value of onChange', () => {
-    const onChange = sinon.stub();
-
-    onChange
-      .onFirstCall().returns(undefined)
-      .onSecondCall().returns(Immutable.fromJS({a:{b:{c:11}}}));
-
-    const data = Immutable.fromJS(json);
-    const deepCursor = Cursor.from(data, ['a', 'b', 'c'], onChange);
-
-    // onChange returning undefined has no effect
-    let newCursor = deepCursor.update(x => x + 1);
-    expect(newCursor.deref()).to.equal(2);
-
-    expect(Immutable.is(
-      onChange.args[0][0],
-      Immutable.fromJS({a:{b:{c:2}}})
-    )).to.be.true;
-    expect(Immutable.is(
-      onChange.args[0][1],
-      data
-    )).to.be.true;
-    expect(onChange.args[0][2]).to.deep.equal(['a', 'b', 'c']);
-
-    // onChange returning something else has an effect
-    newCursor = newCursor.update(function() { return 999; });
-    expect(newCursor.deref()).to.equal(11);
-
-    expect(Immutable.is(
-      onChange.args[1][0],
-      Immutable.fromJS({a:{b:{c:999}}})
-    )).to.be.true;
-    expect(Immutable.is(
-      onChange.args[1][1],
-      Immutable.fromJS({a:{b:{c:2}}})
-    )).to.be.true;
-    expect(onChange.args[0][2]).to.deep.equal(['a', 'b', 'c']);
-
-    // and update has been called exactly twice
-    expect(onChange.args[3]).to.be.undefined;
-  });
-
   it('shares root cursor data with other derived cursors', () => {
+    const onChange = sinon.spy();
     const data = Immutable.fromJS({a: 1, b: 2});
-    const cursor = Cursor.from(data);
+    const cursor = Cursor.from(data, onChange);
 
     cursor.set('a', 2);
-    const result = cursor.set('b', 3);
+    cursor.set('b', 3);
 
-    expect(Immutable.is(result.deref(), Immutable.fromJS({'a': 2, 'b': 3}))).to.be.true;
+    // Ensure multiple cursor updates in one render cycle are serialised
+    expect(Immutable.is(onChange.args[1][3], Immutable.fromJS({a: 2, b: 3})));
+
+    // Whilst cursors stay immutable
+    expect(cursor.get('a')).to.equal(1);
+    expect(cursor.get('b')).to.equal(2);
   });
 
   it('has map API for update shorthand', () => {
@@ -184,12 +142,12 @@ describe('Cursor', () => {
 
     expect(Immutable.is(bCursor.set('c', 10).deref(), Immutable.fromJS({ c: 10 }))).to.be.true;
 
+
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       Immutable.fromJS({ a: { b: { c: 10 } } })
     )).to.be.true;
-    expect(Immutable.is(onChange.args[0][1], data)).to.be.true;
-    expect(onChange.args[0][2]).to.deep.equal(['a', 'b', 'c']);
+    expect(Immutable.is(onChange.args[0][0], data)).to.be.true;
   });
 
   it('creates maps as necessary', () => {
@@ -228,16 +186,14 @@ describe('Cursor', () => {
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       Immutable.fromJS({a: {b: [0, 1, 2, 3, 4]}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       data
     )).to.be.true;
-
-    expect(onChange.args[0][2]).to.deep.equal(['a', 'b']);
   });
 
   it('can pop values of a List', () => {
@@ -251,16 +207,14 @@ describe('Cursor', () => {
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       Immutable.fromJS({a: {b: [0, 1]}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       data
     )).to.be.true;
-
-    expect(onChange.args[0][2]).to.deep.equal(['a', 'b']);
   });
 
   it('can unshift values on a List', () => {
@@ -274,16 +228,14 @@ describe('Cursor', () => {
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       Immutable.fromJS({a: {b: [-2, -1, 0, 1, 2]}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       data
     )).to.be.true;
-
-    expect(onChange.args[0][2]).to.deep.equal(['a', 'b']);
   });
 
   it('can shift values of a List', () => {
@@ -297,16 +249,14 @@ describe('Cursor', () => {
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       Immutable.fromJS({a: {b: [1, 2]}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       data
     )).to.be.true;
-
-    expect(onChange.args[0][2]).to.deep.equal(['a', 'b']);
   });
 
 
@@ -320,16 +270,14 @@ describe('Cursor', () => {
     found = found.set('v', 20);
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       Immutable.fromJS({a: {v: 1}, b: {v: 20}, c: {v: 3}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       data
     )).to.be.true;
-
-    expect(onChange.args[0][2]).to.deep.equal(['b', 'v']);
   });
 
   it('returns wrapped values for iteration API', () => {
@@ -412,16 +360,14 @@ describe('Cursor', () => {
     expect(c1.getIn(['b', 'c'])).to.equal(10);
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       Immutable.fromJS({a:{b:{c:10}}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       data
     )).to.be.true;
-
-    expect(onChange.args[0][2]).to.deep.equal(['a', 'b', 'c']);
   });
 
   it('can set deeply', () => {
@@ -432,16 +378,14 @@ describe('Cursor', () => {
     expect(c1.getIn(['b', 'c'])).to.equal(10);
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       Immutable.fromJS({a:{b:{c:10}}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       data
     )).to.be.true;
-
-    expect(onChange.args[0][2]).to.deep.equal(['a', 'b', 'c']);
   });
 
   it('can get Record value as a property', () => {
@@ -460,16 +404,14 @@ describe('Cursor', () => {
     expect(c1.deref()).to.equal(2);
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       Immutable.fromJS({a:2})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       data
     )).to.be.true;
-
-    expect(onChange.args[0][2]).to.deep.equal(['a']);
   });
 
   it('can set value of a cursor to undefined directly', () => {
@@ -480,15 +422,13 @@ describe('Cursor', () => {
     expect(c1.deref()).to.equal(undefined);
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       Immutable.fromJS({a:undefined})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       data
     )).to.be.true;
-
-    expect(onChange.args[0][2]).to.deep.equal(['a']);
   });
 });

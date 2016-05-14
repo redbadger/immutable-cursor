@@ -12,17 +12,17 @@ import {
 const {Iterator} = Iterable;
 const NOT_SET = {}; // Sentinel value
 
-function Base(root, data, keyPath, onChange, size) {
+function Base(rootData, keyPath, updater, deref, size) {
   this.size = size;
-  this._root = root || this;
-  this._data = data;
+  this._rootData = rootData;
   this._keyPath = keyPath;
-  this._onChange = onChange;
+  this._updater = updater;
+  this._deref = deref;
 }
 
 Base.prototype = {
   deref(notSetValue) {
-    return this._root._data.getIn(this._keyPath, notSetValue);
+    return this._rootData.getIn(this._keyPath, notSetValue);
   },
 
   // Need test of noSetValue
@@ -39,7 +39,7 @@ Base.prototype = {
     if (constructKeyPath.length === 0) {
       return this;
     }
-    const value = this._root._data.getIn(newKeyPath(this._keyPath, constructKeyPath), NOT_SET);
+    const value = this._rootData.getIn(newKeyPath(this._keyPath, constructKeyPath), NOT_SET);
     return value === NOT_SET ? notSetValue : wrappedValue(this, constructKeyPath, value);
   },
 
