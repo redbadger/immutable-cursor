@@ -17,13 +17,19 @@ A Clojure-inspired atom is placed above the cursor composition, and is the only 
 ```js
 const data = Immutable.fromJS({a: 1, b: 2});
 
-const cursor = Cursor.from(data, newData => {
+const cursor = Cursor.from(data, (prevValue, nextValue) => {
   console.log(newData)
+  // First call: $> Map { "a": 2, "b": 2 }
+  // Second call: $> Map { "a": 2, "b": 3 }
 });
 
+// Multiple update transactions are serialised.
 cursor.set('a', 2);
 cursor.set('b', 3);
-// $> Map {"a": 2, "b": 3}
+
+// Whilst the cursor the itself stays immutable.
+cursor.deref(); //$
+// $> Map { "a": 1, "b": 2 }
 ```
 
 This has far reaching consequences when used in component-centric view layers such as React. A typical use case
