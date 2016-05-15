@@ -1,6 +1,6 @@
 {
   "name": "immutable-cursor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Immutable cursors incorporating the Immutable.js API interface over a Clojure-inspired atom",
   "main": "dist/cursor.js",
   "author": {
@@ -39,7 +39,6 @@
     "sinon": "^1.15.4"
   },
   "scripts": {
-    "postinstall": "if [ -z \"$CI\" ]; then chmod +x hooks/*; cd .git/hooks && ln -sf ../../hooks/* .; fi",
     "lint": "eslint .",
     "compile": "babel src --out-dir dist",
     "test": "NODE_ENV=test mocha --compilers js:babel-core/register",
