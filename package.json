@@ -1,6 +1,6 @@
 {
   "name": "immutable-cursor",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A fork of the Immutable.js cursor with more practical semantics",
   "main": "dist/cursor.js",
   "author": {
@@ -35,7 +35,6 @@
     "sinon": "^1.15.4"
   },
   "scripts": {
-    "postinstall": "if [ -z \"$CI\" ]; then chmod +x hooks/*; cd .git/hooks && ln -sf ../../hooks/* .; fi",
     "lint": "node_modules/.bin/eslint .",
     "compile": "babel src --out-dir dist",
     "test": "node_modules/.bin/mocha --compilers js:babel/register",
