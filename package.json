@@ -1,6 +1,6 @@
 {
   "name": "immutable-cursor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Immutable cursors incorporating the Immutable.js API interface over a Clojure-inspired atom",
   "main": "dist/cursor.js",
   "author": {
