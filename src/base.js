@@ -1,4 +1,4 @@
-import {Iterable, Map} from 'immutable';
+import { Iterable, Map } from 'immutable';
 
 import {
   listToKeyPath,
@@ -9,7 +9,7 @@ import {
   wrappedValue
 } from './utils';
 
-const {Iterator} = Iterable;
+const { Iterator } = Iterable;
 const NOT_SET = {}; // Sentinel value
 
 function Base(rootData, keyPath, updater, deref, size) {
@@ -39,8 +39,13 @@ Base.prototype = {
     if (constructKeyPath.length === 0) {
       return this;
     }
-    const value = this._rootData.getIn(newKeyPath(this._keyPath, constructKeyPath), NOT_SET);
-    return value === NOT_SET ? notSetValue : wrappedValue(this, constructKeyPath, value);
+    const value = this._rootData.getIn(
+      newKeyPath(this._keyPath, constructKeyPath),
+      NOT_SET
+    );
+    return value === NOT_SET
+      ? notSetValue
+      : wrappedValue(this, constructKeyPath, value);
   },
 
   set(key, value) {
@@ -54,7 +59,7 @@ Base.prototype = {
 
   // Needs tests
   remove(key) {
-    return updateCursor(this, m  => m.remove(key), [key]);
+    return updateCursor(this, m => m.remove(key), [key]);
   },
 
   // Needs tests
@@ -81,9 +86,11 @@ Base.prototype = {
   },
 
   updateIn(keyPath, notSetValue, updater) {
-    return updateCursor(this, m =>
-      m.updateIn(keyPath, notSetValue, updater)
-      , keyPath);
+    return updateCursor(
+      this,
+      m => m.updateIn(keyPath, notSetValue, updater),
+      keyPath
+    );
   },
 
   merge() {
@@ -120,8 +127,8 @@ Base.prototype = {
     const deref = cursor.deref();
     return do {
       if (deref && deref.__iterate) {
-        deref.__iterate((v, k) =>
-          fn(wrappedValue(cursor, [k], v), k, cursor),
+        deref.__iterate(
+          (v, k) => fn(wrappedValue(cursor, [k], v), k, cursor),
           reverse
         );
       } else {
@@ -133,8 +140,9 @@ Base.prototype = {
   __iterator(type, reverse) {
     const deref = this.deref();
     const cursor = this;
-    const iterator = deref && deref.__iterator &&
-deref.__iterator(Iterator.ENTRIES, reverse);
+    const iterator = deref &&
+      deref.__iterator &&
+      deref.__iterator(Iterator.ENTRIES, reverse);
     return new Iterator(() => {
       if (!iterator) {
         return { value: undefined, done: true };

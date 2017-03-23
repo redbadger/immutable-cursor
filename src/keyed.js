@@ -1,4 +1,4 @@
-import {Seq} from 'immutable';
+import { Seq } from 'immutable';
 import Base from './base';
 
 function Keyed(rootData, keyPath, updater, deref, size) {

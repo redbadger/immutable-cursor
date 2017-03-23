@@ -1,4 +1,4 @@
-import {Iterable, Record, Map} from 'immutable';
+import { Iterable, Record, Map } from 'immutable';
 import KeyedCursor from './keyed';
 import IndexedCursor from './indexed';
 
@@ -62,7 +62,8 @@ export function valToKeyPath(val) {
 
 export function subCursor(cursor, keyPath, value) {
   if (arguments.length < 3) {
-    return makeCursor( // call without value
+    return makeCursor(
+      // call without value
       cursor._rootData,
       newKeyPath(cursor._keyPath, keyPath),
       cursor._updater,
@@ -80,12 +81,18 @@ export function subCursor(cursor, keyPath, value) {
 
 export function updateCursor(cursor, changeFn) {
   const deepChange = arguments.length > 2;
-  const updateFn = oldState => oldState.updateIn(
+  const updateFn = oldState =>
+    oldState.updateIn(
+      cursor._keyPath,
+      deepChange ? Map() : undefined,
+      changeFn
+    );
+  return makeCursor(
+    cursor._updater(updateFn),
     cursor._keyPath,
-    deepChange ? Map() : undefined,
-    changeFn
+    cursor._updater,
+    cursor._deref
   );
-  return makeCursor(cursor._updater(updateFn), cursor._keyPath, cursor._updater, cursor._deref);
 }
 
 export function wrappedValue(cursor, keyPath, value) {
