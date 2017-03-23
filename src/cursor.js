@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import {valToKeyPath, makeCursor} from './utils';
+import { valToKeyPath, makeCursor } from './utils';
 import createAtom from 'atom-store';
 
 function cursorFrom(data, keyPath, onChange) {

@@ -1,6 +1,6 @@
-import {Seq} from 'immutable';
+import { Seq } from 'immutable';
 import Base from './base';
-import {updateCursor} from './utils';
+import { updateCursor } from './utils';
 
 function Indexed(rootData, keyPath, updater, deref, size) {
   Base.call(this, rootData, keyPath, updater, deref, size);
