@@ -78,14 +78,19 @@ export function subCursor(cursor, keyPath, value) {
   );
 }
 
-export function updateCursor(cursor, changeFn) {
+export function updateCursor(cursor, changeFn, keyPath) {
   const deepChange = arguments.length > 2;
   const updateFn = oldState => oldState.updateIn(
     cursor._keyPath,
     deepChange ? Map() : undefined,
     changeFn
   );
-  return makeCursor(cursor._updater(updateFn), cursor._keyPath, cursor._updater, cursor._deref);
+  return makeCursor(
+    cursor._updater(updateFn, newKeyPath(cursor._keyPath, keyPath)),
+    cursor._keyPath,
+    cursor._updater,
+    cursor._deref
+  );
 }
 
 export function wrappedValue(cursor, keyPath, value) {
