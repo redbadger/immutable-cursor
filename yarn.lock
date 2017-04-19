@@ -117,9 +117,9 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-atom-store@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/atom-store/-/atom-store-0.0.2.tgz#3930e83d0e48c88d6f00aaeac4fe023da8e25d1c"
+atom-store@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/atom-store/-/atom-store-0.0.3.tgz#296566253e9f686b9225fc11ea8aa5ed2085c479"
 
 aws-sign2@~0.6.0:
   version "0.6.0"
@@ -1519,7 +1519,7 @@ http-signature@~1.1.0:
     jsprim "^1.2.2"
     sshpk "^1.7.0"
 
-immutable@3.7.6:
+immutable@^3.7.6:
   version "3.7.6"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.7.6.tgz#13b4d3cb12befa15482a26fe1b2ebae640071e4b"
 

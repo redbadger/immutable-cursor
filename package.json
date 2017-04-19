@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/redbadger/immutable-cursor",
   "dependencies": {
-    "atom-store": "0.0.2",
-    "immutable": "3.7.6"
+    "atom-store": "0.0.3",
+    "immutable": "^3.7.6"
   },
   "devDependencies": {
     "babel-cli": "^6.8.0",
