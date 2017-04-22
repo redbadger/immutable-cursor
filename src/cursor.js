@@ -25,7 +25,7 @@ function cursorFrom(data, keyPath, onChange) {
     atom.watch(onChange);
   }
 
-  return makeCursor(data, keyPath, atom.write.bind(atom), atom.read);
+  return makeCursor(data, keyPath, atom);
 }
 
 exports.from = cursorFrom;
