@@ -12,12 +12,11 @@ import {
 const {Iterator} = Iterable;
 const NOT_SET = {}; // Sentinel value
 
-function Base(rootData, keyPath, updater, deref, size) {
+function Base(rootData, keyPath, store, size) {
   this.size = size;
   this._rootData = rootData;
   this._keyPath = keyPath;
-  this._updater = updater;
-  this._deref = deref;
+  this._store = store;
 }
 
 Base.prototype = {

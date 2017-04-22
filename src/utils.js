@@ -23,13 +23,13 @@ export function defineRecordProperties(cursor, value) {
   }
 }
 
-export function makeCursor(rootData, keyPath, updater, deref, value) {
+export function makeCursor(rootData, keyPath, store, value) {
   if (arguments.length < 5) {
     value = rootData.getIn(keyPath);
   }
   const size = value && value.size;
   const Cursor = Iterable.isIndexed(value) ? IndexedCursor : KeyedCursor;
-  const cursor = new Cursor(rootData, keyPath, updater, deref, size);
+  const cursor = new Cursor(rootData, keyPath, store, size);
 
   if (value instanceof Record) {
     defineRecordProperties(cursor, value);
@@ -65,15 +65,13 @@ export function subCursor(cursor, keyPath, value) {
     return makeCursor( // call without value
       cursor._rootData,
       newKeyPath(cursor._keyPath, keyPath),
-      cursor._updater,
-      cursor._deref
+      cursor._store
     );
   }
   return makeCursor(
     cursor._rootData,
     newKeyPath(cursor._keyPath, keyPath),
-    cursor._updater,
-    cursor._deref,
+    cursor._store,
     value
   );
 }
@@ -85,7 +83,7 @@ export function updateCursor(cursor, changeFn) {
     deepChange ? Map() : undefined,
     changeFn
   );
-  return makeCursor(cursor._updater(updateFn), cursor._keyPath, cursor._updater, cursor._deref);
+  return makeCursor(cursor._store.write(updateFn), cursor._keyPath, cursor._store);
 }
 
 export function wrappedValue(cursor, keyPath, value) {
