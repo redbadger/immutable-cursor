@@ -23,9 +23,9 @@ const cursor = Cursor.from(data, (nextValue, prevValue, keyPath) => {
 
 // Multiple update transactions are serialised.
 cursor.set('a', 2);
-// Value changed from Map { a: 1, b: 2 } to Map { a: 2, b: 2 } at []
+// Value changed from Map { a: 1, b: 2 } to Map { a: 2, b: 2 } at [ 'a' ]
 cursor.set('b', 3);
-// Value changed from Map { a: 2, b: 2 } to Map { a: 2, b: 3 } at []
+// Value changed from Map { a: 2, b: 2 } to Map { a: 2, b: 3 } at [ 'b' ]
 
 // Whilst the cursor the itself stays immutable.
 cursor.deref(); // => Map { "a": 1, "b": 2 }
