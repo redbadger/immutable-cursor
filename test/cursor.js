@@ -431,4 +431,16 @@ describe('Cursor', () => {
       data
     )).to.be.true;
   });
+
+  it('returns update paths', () => {
+    const onChange = sinon.spy();
+    const data = Immutable.fromJS({ a: 1, b: { c: 2 } });
+    const c = Cursor.from(data, [], onChange);
+
+    c.set('a', 2);
+    c.cursor(['b', 'c']).set(3);
+
+    expect(onChange.args[0][2]).to.deep.equal(['a']);
+    expect(onChange.args[1][2]).to.deep.equal(['b', 'c']);
+  });
 });
