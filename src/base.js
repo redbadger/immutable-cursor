@@ -27,7 +27,7 @@ Base.prototype = {
 
   // Need test of noSetValue
   valueOf (notSetValue) {
-    return this.deref.call(this, notSetValue);
+    return this.deref(notSetValue);
   },
 
   get (key, notSetValue) {
@@ -64,7 +64,7 @@ Base.prototype = {
 
   // Needs tests
   delete (key) {
-    return this.remove.call(this, key);
+    return this.remove(key);
   },
 
   deleteIn: Map.prototype.deleteIn,
