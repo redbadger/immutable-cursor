@@ -47,17 +47,12 @@ export function newKeyPath(head, tail) {
 }
 
 export function valToKeyPath(val) {
-  return do {
-    if (Array.isArray(val)) {
-      val;
-    } else {
-      if (Iterable.isIterable(val)) {
-        val.toArray();
-      } else {
-        [val];
-      }
-    }
-  };
+  if (Array.isArray(val)) {
+    return val;
+  } else if (Iterable.isIterable(val)) {
+    return val.toArray();
+  }
+  return [val];
 }
 
 export function subCursor(cursor, keyPath, value) {

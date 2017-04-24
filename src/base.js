@@ -71,13 +71,10 @@ Base.prototype = {
   },
 
   update(keyOrFn, notSetValue, updater) {
-    return do {
-      if (arguments.length === 1) {
-        updateCursor(this, keyOrFn);
-      } else {
-        this.updateIn([keyOrFn], notSetValue, updater);
-      }
-    };
+    if (arguments.length === 1) {
+      return updateCursor(this, keyOrFn);
+    }
+    return this.updateIn([keyOrFn], notSetValue, updater);
   },
 
   updateIn(keyPath, notSetValue, updater) {
@@ -118,16 +115,13 @@ Base.prototype = {
   __iterate(fn, reverse) {
     const cursor = this;
     const deref = cursor.deref();
-    return do {
-      if (deref && deref.__iterate) {
-        deref.__iterate((v, k) =>
-          fn(wrappedValue(cursor, [k], v), k, cursor),
-          reverse
-        );
-      } else {
-        0;
-      }
-    };
+    if (deref && deref.__iterate) {
+      return deref.__iterate((v, k) =>
+        fn(wrappedValue(cursor, [k], v), k, cursor),
+        reverse
+      );
+    }
+    return 0;
   },
 
   __iterator(type, reverse) {
@@ -146,19 +140,15 @@ deref.__iterator(Iterator.ENTRIES, reverse);
       const entry = step.value;
       const k = entry[0];
       const v = wrappedValue(cursor, [k], entry[1]);
-      return {
-        value: do {
-          if (type === Iterator.KEYS) {
-            k;
-          } else {
-            if (type === Iterator.VALUES) {
-              v;
-            } else {
-              [k, v];
-            }
-          }
+      const value = (() => {
+        if (type === Iterator.KEYS) {
+          return k;
+        } if (type === Iterator.VALUES) {
+          return v;
         }
-      };
+        return [k, v];
+      })();
+      return { value };
     });
   }
 };
