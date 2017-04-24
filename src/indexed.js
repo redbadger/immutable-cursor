@@ -2,30 +2,30 @@ import {Seq} from 'immutable';
 import Base from './base';
 import {updateCursor} from './utils';
 
-function Indexed(rootData, keyPath, updater, deref, size) {
+function Indexed (rootData, keyPath, updater, deref, size) {
   Base.call(this, rootData, keyPath, updater, deref, size);
 }
 
 Indexed.prototype = Object.create(Seq.Indexed.prototype);
 Object.assign(Indexed.prototype, Base.prototype);
 
-Indexed.prototype.push = function() {
+Indexed.prototype.push = function () {
   return updateCursor(this, m => m.push.apply(m, arguments));
 };
 
-Indexed.prototype.pop = function() {
+Indexed.prototype.pop = function () {
   return updateCursor(this, m => m.pop());
 };
 
-Indexed.prototype.unshift = function() {
+Indexed.prototype.unshift = function () {
   return updateCursor(this, m => m.unshift.apply(m, arguments));
 };
 
-Indexed.prototype.shift = function() {
+Indexed.prototype.shift = function () {
   return updateCursor(this, m => m.shift());
 };
 
-Indexed.prototype.toString = function() {
+Indexed.prototype.toString = function () {
   return this.__toString('Cursor [', ']');
 };
 

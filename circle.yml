@@ -1,7 +1,11 @@
 machine:
   node:
-    version: 5.5.0
+    version: stable
+  environment:
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
 
 dependencies:
-  pre:
-    - npm install -g npm
+  override:
+    - yarn
+  cache_directories:
+    - ~/.cache/yarn

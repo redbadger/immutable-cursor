@@ -12,7 +12,7 @@ import {
 const {Iterator} = Iterable;
 const NOT_SET = {}; // Sentinel value
 
-function Base(rootData, keyPath, updater, deref, size) {
+function Base (rootData, keyPath, updater, deref, size) {
   this.size = size;
   this._rootData = rootData;
   this._keyPath = keyPath;
@@ -21,29 +21,34 @@ function Base(rootData, keyPath, updater, deref, size) {
 }
 
 Base.prototype = {
-  deref(notSetValue) {
+  deref (notSetValue) {
     return this._rootData.getIn(this._keyPath, notSetValue);
   },
 
   // Need test of noSetValue
-  valueOf(notSetValue) {
-    return this.deref.call(this, notSetValue);
+  valueOf (notSetValue) {
+    return this.deref(notSetValue);
   },
 
-  get(key, notSetValue) {
+  get (key, notSetValue) {
     return this.getIn([key], notSetValue);
   },
 
-  getIn(keyPath, notSetValue) {
+  getIn (keyPath, notSetValue) {
     const constructKeyPath = listToKeyPath(keyPath);
     if (constructKeyPath.length === 0) {
       return this;
     }
-    const value = this._rootData.getIn(newKeyPath(this._keyPath, constructKeyPath), NOT_SET);
-    return value === NOT_SET ? notSetValue : wrappedValue(this, constructKeyPath, value);
+    const value = this._rootData.getIn(
+      newKeyPath(this._keyPath, constructKeyPath),
+      NOT_SET
+    );
+    return value === NOT_SET
+      ? notSetValue
+      : wrappedValue(this, constructKeyPath, value);
   },
 
-  set(key, value) {
+  set (key, value) {
     if (arguments.length === 1) {
       return updateCursor(this, () => key, []);
     }
@@ -53,88 +58,82 @@ Base.prototype = {
   setIn: Map.prototype.setIn,
 
   // Needs tests
-  remove(key) {
-    return updateCursor(this, m  => m.remove(key), [key]);
+  remove (key) {
+    return updateCursor(this, m => m.remove(key), [key]);
   },
 
   // Needs tests
-  delete(key) {
-    return this.remove.call(this, key);
+  delete (key) {
+    return this.remove(key);
   },
 
   deleteIn: Map.prototype.deleteIn,
 
   removeIn: Map.prototype.deleteIn,
 
-  clear() {
+  clear () {
     return updateCursor(this, m => m.clear());
   },
 
-  update(keyOrFn, notSetValue, updater) {
-    return do {
-      if (arguments.length === 1) {
-        updateCursor(this, keyOrFn);
-      } else {
-        this.updateIn([keyOrFn], notSetValue, updater);
-      }
-    };
+  update (keyOrFn, notSetValue, updater) {
+    if (arguments.length === 1) {
+      return updateCursor(this, keyOrFn);
+    }
+    return this.updateIn([keyOrFn], notSetValue, updater);
   },
 
-  updateIn(keyPath, notSetValue, updater) {
+  updateIn (keyPath, notSetValue, updater) {
     return updateCursor(this, m =>
       m.updateIn(keyPath, notSetValue, updater)
       , keyPath);
   },
 
-  merge() {
+  merge () {
     return updateCursor(this, m => m.merge.apply(m, arguments));
   },
 
-  mergeWith() {
+  mergeWith () {
     return updateCursor(this, m => m.mergeWith.apply(m, arguments));
   },
 
   mergeIn: Map.prototype.mergeIn,
 
-  mergeDeep() {
+  mergeDeep () {
     return updateCursor(this, m => m.mergeDeep.apply(m, arguments));
   },
 
-  mergeDeepWith() {
+  mergeDeepWith () {
     return updateCursor(this, m => m.mergeDeepWith.apply(m, arguments));
   },
 
   mergeDeepIn: Map.prototype.mergeDeepIn,
 
-  withMutations(fn) {
+  withMutations (fn) {
     return updateCursor(this, m => (m || Map()).withMutations(fn));
   },
 
-  cursor(path) {
+  cursor (path) {
     const subKeyPath = valToKeyPath(path);
     return subKeyPath.length === 0 ? this : subCursor(this, subKeyPath);
   },
 
-  __iterate(fn, reverse) {
+  __iterate (fn, reverse) {
     const cursor = this;
     const deref = cursor.deref();
-    return do {
-      if (deref && deref.__iterate) {
-        deref.__iterate((v, k) =>
-          fn(wrappedValue(cursor, [k], v), k, cursor),
-          reverse
-        );
-      } else {
-        0;
-      }
-    };
+    if (deref && deref.__iterate) {
+      return deref.__iterate((v, k) =>
+        fn(wrappedValue(cursor, [k], v), k, cursor),
+        reverse
+      );
+    }
+    return 0;
   },
 
-  __iterator(type, reverse) {
+  __iterator (type, reverse) {
     const deref = this.deref();
     const cursor = this;
     const iterator = deref && deref.__iterator &&
-deref.__iterator(Iterator.ENTRIES, reverse);
+      deref.__iterator(Iterator.ENTRIES, reverse);
     return new Iterator(() => {
       if (!iterator) {
         return { value: undefined, done: true };
@@ -146,19 +145,15 @@ deref.__iterator(Iterator.ENTRIES, reverse);
       const entry = step.value;
       const k = entry[0];
       const v = wrappedValue(cursor, [k], entry[1]);
-      return {
-        value: do {
-          if (type === Iterator.KEYS) {
-            k;
-          } else {
-            if (type === Iterator.VALUES) {
-              v;
-            } else {
-              [k, v];
-            }
-          }
+      const value = (() => {
+        if (type === Iterator.KEYS) {
+          return k;
+        } if (type === Iterator.VALUES) {
+          return v;
         }
-      };
+        return [k, v];
+      })();
+      return { value };
     });
   }
 };
