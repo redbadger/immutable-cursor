@@ -10,7 +10,7 @@
 import {valToKeyPath, makeCursor} from './utils';
 import createAtom from 'atom-store';
 
-function cursorFrom(data, keyPath, onChange) {
+function cursorFrom (data, keyPath, onChange) {
   const atom = createAtom(data);
   if (arguments.length === 1) {
     keyPath = [];
