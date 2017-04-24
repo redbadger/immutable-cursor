@@ -1,8 +1,11 @@
+/* eslint-disable no-unused-expressions */
+
 import Immutable from 'immutable';
 import Cursor from './../src/cursor';
 
 import {expect} from 'chai';
 import sinon from 'sinon';
+import { describe, it } from 'mocha';
 
 describe('Cursor', () => {
   const json = { a: { b: { c: 1 } } };
@@ -78,7 +81,7 @@ describe('Cursor', () => {
 
     expect(Immutable.is(
       onChange.args[0][1],
-      Immutable.fromJS({a:{b:{c:2}}})
+      Immutable.fromJS({a: {b: {c: 2}}})
     )).to.be.true;
     expect(Immutable.is(
       onChange.args[0][0],
@@ -90,11 +93,11 @@ describe('Cursor', () => {
 
     expect(Immutable.is(
       onChange.args[1][1],
-      Immutable.fromJS({a:{b:{c:3}}})
+      Immutable.fromJS({a: {b: {c: 3}}})
     )).to.be.true;
     expect(Immutable.is(
       onChange.args[1][0],
-      Immutable.fromJS({a:{b:{c:2}}})
+      Immutable.fromJS({a: {b: {c: 2}}})
     )).to.be.true;
 
     // meanwhile, data is still immutable:
@@ -106,7 +109,7 @@ describe('Cursor', () => {
     expect(otherNewDeepCursor.deref()).to.equal(13);
     expect(Immutable.is(
       onChange.args[2][1],
-      Immutable.fromJS({a:{b:{c:13}}})
+      Immutable.fromJS({a: {b: {c: 13}}})
     )).to.be.true;
     expect(Immutable.is(
       onChange.args[2][0],
@@ -140,12 +143,11 @@ describe('Cursor', () => {
     const aCursor = Cursor.from(data, 'a', onChange);
     const bCursor = aCursor.cursor('b');
 
-    expect(Immutable.is(bCursor.set('c', 10).deref(), Immutable.fromJS({ c: 10 }))).to.be.true;
-
+    expect(Immutable.is(bCursor.set('c', 10).deref(), Immutable.fromJS({c: 10}))).to.be.true;
 
     expect(Immutable.is(
       onChange.args[0][1],
-      Immutable.fromJS({ a: { b: { c: 10 } } })
+      Immutable.fromJS({a: {b: {c: 10}}})
     )).to.be.true;
     expect(Immutable.is(onChange.args[0][0], data)).to.be.true;
   });
@@ -259,7 +261,6 @@ describe('Cursor', () => {
     )).to.be.true;
   });
 
-
   it('returns wrapped values for sequence API', () => {
     const data = Immutable.fromJS({a: {v: 1}, b: {v: 2}, c: {v: 3}});
     const onChange = sinon.spy();
@@ -284,7 +285,7 @@ describe('Cursor', () => {
     const jsData = [{val: 0}, {val: 1}, {val: 2}];
     const data = Immutable.fromJS(jsData);
     const cursor = Cursor.from(data);
-    cursor.forEach(function(c, i) {
+    cursor.forEach((c, i) => {
       expect(typeof c.deref).to.equal('function'); // is a cursor!
       expect(c.get('val')).to.equal(i);
     });
@@ -354,14 +355,14 @@ describe('Cursor', () => {
 
   it('can update deeply', () => {
     const onChange = sinon.spy();
-    const data = Immutable.fromJS({a:{b:{c:1}}});
+    const data = Immutable.fromJS({a: {b: {c: 1}}});
     const c = Cursor.from(data, ['a'], onChange);
     const c1 = c.updateIn(['b', 'c'], x => x * 10);
     expect(c1.getIn(['b', 'c'])).to.equal(10);
 
     expect(Immutable.is(
       onChange.args[0][1],
-      Immutable.fromJS({a:{b:{c:10}}})
+      Immutable.fromJS({a: {b: {c: 10}}})
     )).to.be.true;
 
     expect(Immutable.is(
@@ -372,14 +373,14 @@ describe('Cursor', () => {
 
   it('can set deeply', () => {
     const onChange = sinon.spy();
-    const data = Immutable.fromJS({a:{b:{c:1}}});
+    const data = Immutable.fromJS({a: {b: {c: 1}}});
     const c = Cursor.from(data, ['a'], onChange);
     const c1 = c.setIn(['b', 'c'], 10);
     expect(c1.getIn(['b', 'c'])).to.equal(10);
 
     expect(Immutable.is(
       onChange.args[0][1],
-      Immutable.fromJS({a:{b:{c:10}}})
+      Immutable.fromJS({a: {b: {c: 10}}})
     )).to.be.true;
 
     expect(Immutable.is(
@@ -398,14 +399,14 @@ describe('Cursor', () => {
 
   it('can set value of a cursor directly', () => {
     const onChange = sinon.spy();
-    const data = Immutable.fromJS({a:1});
+    const data = Immutable.fromJS({a: 1});
     const c = Cursor.from(data, ['a'], onChange);
     const c1 = c.set(2);
     expect(c1.deref()).to.equal(2);
 
     expect(Immutable.is(
       onChange.args[0][1],
-      Immutable.fromJS({a:2})
+      Immutable.fromJS({a: 2})
     )).to.be.true;
 
     expect(Immutable.is(
@@ -416,14 +417,14 @@ describe('Cursor', () => {
 
   it('can set value of a cursor to undefined directly', () => {
     const onChange = sinon.spy();
-    const data = Immutable.fromJS({a:1});
+    const data = Immutable.fromJS({a: 1});
     const c = Cursor.from(data, ['a'], onChange);
     const c1 = c.set(undefined);
     expect(c1.deref()).to.equal(undefined);
 
     expect(Immutable.is(
       onChange.args[0][1],
-      Immutable.fromJS({a:undefined})
+      Immutable.fromJS({a: undefined})
     )).to.be.true;
 
     expect(Immutable.is(
