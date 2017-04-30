@@ -41,6 +41,7 @@
   "scripts": {
     "lint": "eslint .",
     "compile": "babel src --out-dir dist",
+    "precompile": "npm test",
     "test": "NODE_ENV=test mocha --compilers js:babel-core/register",
     "prepublish": "npm run compile"
   }
