@@ -77,11 +77,11 @@ describe('Cursor', () => {
     expect(newDeepCursor.deref()).to.equal(2);
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       Immutable.fromJS({a:{b:{c:2}}})
     )).to.be.true;
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       data
     )).to.be.true;
 
@@ -89,11 +89,11 @@ describe('Cursor', () => {
     expect(newestDeepCursor.deref()).to.equal(3);
 
     expect(Immutable.is(
-      onChange.args[1][1],
+      onChange.args[1][0],
       Immutable.fromJS({a:{b:{c:3}}})
     )).to.be.true;
     expect(Immutable.is(
-      onChange.args[1][0],
+      onChange.args[1][1],
       Immutable.fromJS({a:{b:{c:2}}})
     )).to.be.true;
 
@@ -105,11 +105,11 @@ describe('Cursor', () => {
     const otherNewDeepCursor = deepCursor.update(x => x + 10);
     expect(otherNewDeepCursor.deref()).to.equal(13);
     expect(Immutable.is(
-      onChange.args[2][1],
+      onChange.args[2][0],
       Immutable.fromJS({a:{b:{c:13}}})
     )).to.be.true;
     expect(Immutable.is(
-      onChange.args[2][0],
+      onChange.args[2][1],
       data.setIn(['a', 'b', 'c'], 3) // NOT SURE IF CORRECT
     )).to.be.true;
 
@@ -144,10 +144,10 @@ describe('Cursor', () => {
 
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       Immutable.fromJS({ a: { b: { c: 10 } } })
     )).to.be.true;
-    expect(Immutable.is(onChange.args[0][0], data)).to.be.true;
+    expect(Immutable.is(onChange.args[0][1], data)).to.be.true;
   });
 
   it('creates maps as necessary', () => {
@@ -186,12 +186,12 @@ describe('Cursor', () => {
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       Immutable.fromJS({a: {b: [0, 1, 2, 3, 4]}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       data
     )).to.be.true;
   });
@@ -207,12 +207,12 @@ describe('Cursor', () => {
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       Immutable.fromJS({a: {b: [0, 1]}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       data
     )).to.be.true;
   });
@@ -228,12 +228,12 @@ describe('Cursor', () => {
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       Immutable.fromJS({a: {b: [-2, -1, 0, 1, 2]}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       data
     )).to.be.true;
   });
@@ -249,12 +249,12 @@ describe('Cursor', () => {
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       Immutable.fromJS({a: {b: [1, 2]}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       data
     )).to.be.true;
   });
@@ -270,12 +270,12 @@ describe('Cursor', () => {
     found = found.set('v', 20);
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       Immutable.fromJS({a: {v: 1}, b: {v: 20}, c: {v: 3}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       data
     )).to.be.true;
   });
@@ -360,12 +360,12 @@ describe('Cursor', () => {
     expect(c1.getIn(['b', 'c'])).to.equal(10);
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       Immutable.fromJS({a:{b:{c:10}}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       data
     )).to.be.true;
   });
@@ -378,12 +378,12 @@ describe('Cursor', () => {
     expect(c1.getIn(['b', 'c'])).to.equal(10);
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       Immutable.fromJS({a:{b:{c:10}}})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       data
     )).to.be.true;
   });
@@ -404,12 +404,12 @@ describe('Cursor', () => {
     expect(c1.deref()).to.equal(2);
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       Immutable.fromJS({a:2})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       data
     )).to.be.true;
   });
@@ -422,13 +422,25 @@ describe('Cursor', () => {
     expect(c1.deref()).to.equal(undefined);
 
     expect(Immutable.is(
-      onChange.args[0][1],
+      onChange.args[0][0],
       Immutable.fromJS({a:undefined})
     )).to.be.true;
 
     expect(Immutable.is(
-      onChange.args[0][0],
+      onChange.args[0][1],
       data
     )).to.be.true;
+  });
+
+  it('returns update paths', () => {
+    const onChange = sinon.spy();
+    const data = Immutable.fromJS({ a: 1, b: { c: 2 } });
+    const c = Cursor.from(data, [], onChange);
+
+    c.set('a', 2);
+    c.cursor(['b', 'c']).set(3);
+
+    expect(onChange.args[0][2]).to.deep.equal(['a']);
+    expect(onChange.args[1][2]).to.deep.equal(['b', 'c']);
   });
 });
