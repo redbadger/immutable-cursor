@@ -117,9 +117,9 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-atom-store@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/atom-store/-/atom-store-0.0.3.tgz#296566253e9f686b9225fc11ea8aa5ed2085c479"
+atom-store@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/atom-store/-/atom-store-0.0.4.tgz#8bc9c1abd69f450490cdcaff0d1f09e8501ea52d"
 
 aws-sign2@~0.6.0:
   version "0.6.0"
@@ -644,12 +644,6 @@ babel-plugin-transform-regenerator@^6.22.0:
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-regenerator/-/babel-plugin-transform-regenerator-6.22.0.tgz#65740593a319c44522157538d690b84094617ea6"
   dependencies:
     regenerator-transform "0.9.8"
-
-babel-plugin-transform-runtime@^6.8.0:
-  version "6.23.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-transform-runtime/-/babel-plugin-transform-runtime-6.23.0.tgz#88490d446502ea9b8e7efb0fe09ec4d99479b1ee"
-  dependencies:
-    babel-runtime "^6.22.0"
 
 babel-plugin-transform-strict-mode@^6.22.0:
   version "6.22.0"
