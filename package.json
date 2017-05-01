@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/redbadger/immutable-cursor",
   "dependencies": {
-    "atom-store": "0.0.3",
+    "atom-store": "^0.0.4",
     "immutable": "^3.7.6"
   },
   "devDependencies": {
